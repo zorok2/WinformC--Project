@@ -44,10 +44,46 @@
 >- Tính tái sử dụng: Có thể sử dụng phần mềm tại các cửa hàng có quy trình nghiệp vụ tương tự.
 >- Tính bảo trì: Điều chỉnh các lỗi phát sinh trong giai đoạn sử dụng phần mềm.
 
+
+
 ### Giao diện hệ thống
-![image](https://user-images.githubusercontent.com/86778182/196001563-b90b4d99-a6d1-45f3-98e6-6806137852b2.png)
-### Giao diện tài khoản Nhân viên
-![image](https://user-images.githubusercontent.com/86778182/196001611-a7b869fd-1cae-4c2a-8162-965436d5ced5.png)
-### Giao diện tài khoản Quản lý
-![image](https://user-images.githubusercontent.com/86778182/196001623-a9255265-1faf-41fa-b984-c0d3233d7a71.png)
+
+![Screenshot 2022-10-07 221121](https://user-images.githubusercontent.com/86778182/196039024-7e7d7189-4f4b-4ba1-a8fe-15508509840b.png)
+#### Giao diện tài khoản Nhân viên
+![Screenshot 2022-10-14 211528](https://user-images.githubusercontent.com/86778182/196039091-b76b459d-ccd3-4d52-b933-e71eadea7019.png)
+
+#### Giao diện tài khoản Quản lý
+
+![Screenshot 2022-10-14 212617](https://user-images.githubusercontent.com/86778182/196039121-cce95c55-547b-4646-a38a-74eaad2a2909.png)
+
+
+
+- Giao diện cho nhân viên bán hàng
+
+![Screenshot 2022-10-07 222207](https://user-images.githubusercontent.com/86778182/196039415-849bf470-019b-4d0a-8d05-1196f281c0db.png)
+
+
+
+- Giao diện thanh toán bằng tiền mặt
+
+![Screenshot 2022-10-07 222827](https://user-images.githubusercontent.com/86778182/196039410-4ff1daff-733e-423c-8227-7572c55fe494.png)
+
+
+
+- Giao diện thanh toán bằng Momo
+
+![Screenshot 2022-10-14 212927](https://user-images.githubusercontent.com/86778182/196039357-d573e4e4-b5b5-49bf-88ab-6e18477d9e52.png)
+
+![Screenshot 2022-10-14 212959](https://user-images.githubusercontent.com/86778182/196039363-d976f972-fe8d-41ba-88c9-06aefc3f4e54.png)
+
+
+
+- In hóa đơn sau khi mua hàng
+
+![Screenshot 2022-10-16 210603](https://user-images.githubusercontent.com/86778182/196039881-38cd784e-9431-4653-be47-5b701c7ab648.png)
+
+
+- Giao diện thống kê
+
+![Screenshot 2022-10-14 212751](https://user-images.githubusercontent.com/86778182/196039366-f36efd5a-1392-4776-9349-1afb29660eb7.png)
 
