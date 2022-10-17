@@ -15,6 +15,9 @@ namespace formLogin
     {
         public static string userName;
         public static string password;
+        public static string fullName;
+
+        public static int Permit;
         public formDangNhap()
         {
             InitializeComponent();
@@ -23,31 +26,33 @@ namespace formLogin
 
         private void tbAccount_MouseClick(object sender, MouseEventArgs e)
         {
-            txt_Account.Text = "";
-
-            if (txt_Password.Text == "" || txt_Password.Text == "Mật khẩu")
+            if (txt_Account.Text == "" || txt_Account.Text == "Tài khoản")
             {
-                txt_Password.Text = "";
+                txt_Account.Text = "";
                 txt_Account.ForeColor = Color.Black;
             }
+          
         }
 
         private void tbpassword_MouseClick(object sender, MouseEventArgs e)
         {
-            txt_Password.Text = null;
-            txt_Password.ForeColor = Color.Black;
+            if (txt_Password.Text == "" || txt_Password.Text == "Mật khẩu")
+            {
+                txt_Password.Text = "";
+                txt_Password.ForeColor = Color.Black;
+            }
 
         }
 
         private void cbShowPass_CheckedChanged(object sender, EventArgs e)
         {
-            if (cb_ShowPass.Checked == true)
+            if (cb_ShowPass.Checked)
             {
-                txt_Password.PasswordChar = (char)0;
+                txt_Password.UseSystemPasswordChar = false;
             }
             else
             {
-                txt_Password.PasswordChar = '*';
+                txt_Password.UseSystemPasswordChar = true;
 
             }
         }
@@ -237,11 +242,19 @@ namespace formLogin
                         cmd.Parameters.AddWithValue("@username", txt_Account.Text);
                         cmd.Parameters.AddWithValue("@pass", txt_Password.Text);
                         cmd.Connection = conn;
-
                         object kq = cmd.ExecuteScalar();
+                        // get name account
+                        SqlCommand cmd1 = new SqlCommand();
+                        cmd1.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd1.CommandText = "getNameAccount";
+                        cmd1.Parameters.AddWithValue("@username", txt_Account.Text);
+                        cmd1.Connection = conn;
+                        object s = cmd1.ExecuteScalar();
+                        fullName = s.ToString();
                         int code = Convert.ToInt32(kq);
                         if (code == 1)
                         {
+                            Permit = 1;
                             formProgressbarQL p = new formProgressbarQL();
                             this.Hide();
                             p.Show();
@@ -251,6 +264,7 @@ namespace formLogin
                         }
                         else if (code == 2)
                         {
+                            Permit = 2;
                             formProgressBarNV pgnv = new formProgressBarNV();
                             this.Hide();
                             pgnv.Show();
@@ -300,7 +314,7 @@ namespace formLogin
 
         private void formDangNhap_Load(object sender, EventArgs e)
         {
-            
+
             if (Properties.Settings.Default.username == "" || Properties.Settings.Default.password == "")
             {
                 txt_Account.Text = "Tài khoản";
@@ -327,7 +341,7 @@ namespace formLogin
 
         private void txt_Password_KeyDown(object sender, KeyEventArgs e)
         {
-            txt_Password.PasswordChar = '*';
+            txt_Password.UseSystemPasswordChar = true;
         }
 
         private void lbl_QuenPass_Click(object sender, EventArgs e)

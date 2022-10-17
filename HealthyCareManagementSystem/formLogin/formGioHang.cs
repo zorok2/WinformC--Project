@@ -18,6 +18,7 @@ namespace formLogin
         private double total = 0;
         public static string maHD;
         public static float tongtien;
+        public static int khuyenmai;
 
         public formGioHang()
         {
@@ -69,7 +70,7 @@ namespace formLogin
             loadDataToColection();
             // combobox danh mục
             DataTable dtDanhMuc = ClassProvider.dataProvider.Instance.GetDatatableByQuery("select * from DanhMuc");
-          
+
             foreach (DataRow item in dtDanhMuc.Rows)
             {
                 cbbDanhMuc.Items.Add(item["TENDANHMUC"].ToString());
@@ -80,7 +81,7 @@ namespace formLogin
         }
         private void loadProduct()
         {
-            DataTable dtble =  ClassProvider.dataProvider.Instance.GetDataTableByProcedure("GET_PRODUCT");
+            DataTable dtble = ClassProvider.dataProvider.Instance.GetDataTableByProcedure("GET_PRODUCT");
             dtgv_Product.DataSource = dtble;
         }
         private void loadDataToColection()
@@ -285,87 +286,106 @@ namespace formLogin
         {
             tongtien = float.Parse(txt_TotalPrice.Text);
             maHD = txt_HoaDon.Text;
+            khuyenmai = int.Parse(nmr_KhuyenMai.Value.ToString());
             string ngay = dtpk_NgayLap.Value.ToString("yyyy/MM/dd");
 
-            try
+            if (txt_HoaDon.Text == "")
             {
-                using (SqlConnection con = new SqlConnection(Properties.Settings.Default.Constr))
-                {
-                    con.Open();
-                    SqlCommand sqlCommand = new SqlCommand();
-                    sqlCommand.Connection = con;
-                    sqlCommand.CommandText = "INSERT_HOADONByGioHang";
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.Parameters.Add("@MAHD", SqlDbType.VarChar).Value = maHD;
-                    sqlCommand.Parameters.Add("@MANV", SqlDbType.VarChar).Value = cbb_NhanVien.Text;
-                    sqlCommand.Parameters.Add("@MAKH", SqlDbType.VarChar).Value = cbb_KhachHang.Text;
-                    sqlCommand.Parameters.Add("@NGAYLAP", SqlDbType.Date).Value = ngay;
-                    sqlCommand.Parameters.Add("@THANHTIEN", SqlDbType.Float).Value = string.Format("{0:0.000}", Convert.ToDouble(txt_TotalPrice.Text));
-                    sqlCommand.Parameters.Add("@KHUYENMAI", SqlDbType.Float).Value = float.Parse(nmr_KhuyenMai.Value.ToString());
-                    sqlCommand.ExecuteNonQuery();
-                    con.Close();
-                }
-            }
-            catch (Exception ex)
-            {
+                MessageBox.Show("bạn chưa tạo hóa đơn");
+                return;
 
-                MessageBox.Show(ex.Message);
             }
-
-            try
+            else if (dtgv_Cart.RowCount <= 0)
             {
-                using (SqlConnection con = new SqlConnection(Properties.Settings.Default.Constr))
+                MessageBox.Show("Giỏ hàng của bạn hiện đang rỗng");
+                return;
+
+            }
+            else
+            {
+                try
                 {
-                    con.Open();
-                    for (int i = 0; i < dtgv_Cart.Rows.Count; i++)
+                    using (SqlConnection con = new SqlConnection(Properties.Settings.Default.Constr))
                     {
+                        con.Open();
                         SqlCommand sqlCommand = new SqlCommand();
                         sqlCommand.Connection = con;
-                        sqlCommand.CommandText = "INSERT_GIOHANG";
+                        sqlCommand.CommandText = "INSERT_HOADONByGioHang";
                         sqlCommand.CommandType = CommandType.StoredProcedure;
                         sqlCommand.Parameters.Add("@MAHD", SqlDbType.VarChar).Value = maHD;
-                        sqlCommand.Parameters.Add("@MASP", SqlDbType.VarChar).Value = dtgv_Cart.Rows[i].Cells[0].Value.ToString();
-                        sqlCommand.Parameters.Add("@SOLUONG", SqlDbType.Int).Value = Convert.ToInt32(dtgv_Cart.Rows[i].Cells[2].Value.ToString());
-
-                        //sqlCommand.Parameters.Add("@GIABAN", SqlDbType.Money).Value = rs;
-
+                        sqlCommand.Parameters.Add("@MANV", SqlDbType.VarChar).Value = cbb_NhanVien.Text;
+                        sqlCommand.Parameters.Add("@MAKH", SqlDbType.VarChar).Value = cbb_KhachHang.Text;
+                        sqlCommand.Parameters.Add("@NGAYLAP", SqlDbType.Date).Value = ngay;
+                        sqlCommand.Parameters.Add("@THANHTIEN", SqlDbType.Float).Value = string.Format("{0:0.000}", Convert.ToDouble(txt_TotalPrice.Text));
+                        sqlCommand.Parameters.Add("@KHUYENMAI", SqlDbType.Float).Value = float.Parse(nmr_KhuyenMai.Value.ToString());
                         sqlCommand.ExecuteNonQuery();
+                        con.Close();
                     }
-
-                    con.Close();
                 }
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-            //Payment pm = new Payment(total, maHD, int.Parse(nmr_KhuyenMai.Value.ToString()));
-            //pm.ShowDialog();
-            formLoaiThanhToan loaiThanhToan = new formLoaiThanhToan();
-            loaiThanhToan.ShowDialog();
-            total = 0;
-            try
-            {
-                using (SqlConnection con = new SqlConnection(Properties.Settings.Default.Constr))
+                catch (Exception ex)
                 {
-                    con.Open();
-                    SqlCommand sqlCommand = new SqlCommand();
-                    sqlCommand.Connection = con;
-                    sqlCommand.CommandText = "UPDATE_TRANGTHAI";
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.Parameters.Add("@MAHD", SqlDbType.VarChar).Value = maHD;
-                    sqlCommand.ExecuteNonQuery();
-                    reset();
-                    MessageBox.Show("Thanh toán thành công !");
-                    con.Close();
 
+                    MessageBox.Show(ex.Message);
                 }
-            }
-            catch (Exception ex)
-            {
 
-                MessageBox.Show(ex.Message);
+                try
+                {
+                    using (SqlConnection con = new SqlConnection(Properties.Settings.Default.Constr))
+                    {
+                        con.Open();
+                        for (int i = 0; i < dtgv_Cart.Rows.Count; i++)
+                        {
+                            SqlCommand sqlCommand = new SqlCommand();
+                            sqlCommand.Connection = con;
+                            sqlCommand.CommandText = "INSERT_GIOHANG";
+                            sqlCommand.CommandType = CommandType.StoredProcedure;
+                            sqlCommand.Parameters.Add("@MAHD", SqlDbType.VarChar).Value = maHD;
+                            sqlCommand.Parameters.Add("@MASP", SqlDbType.VarChar).Value = dtgv_Cart.Rows[i].Cells[0].Value.ToString();
+                            sqlCommand.Parameters.Add("@SOLUONG", SqlDbType.Int).Value = Convert.ToInt32(dtgv_Cart.Rows[i].Cells[2].Value.ToString());
+
+                            //sqlCommand.Parameters.Add("@GIABAN", SqlDbType.Money).Value = rs;
+
+                            sqlCommand.ExecuteNonQuery();
+                        }
+
+                        con.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                }
+                //Payment pm = new Payment(total, maHD, int.Parse(nmr_KhuyenMai.Value.ToString()));
+                //pm.ShowDialog();
+                formLoaiThanhToan loaiThanhToan = new formLoaiThanhToan();
+                loaiThanhToan.ShowDialog();
+                if(formThanhToanMomo.confirm == true || formpayCash.confirm == true)
+                {
+                    total = 0;
+                    try
+                    {
+                        using (SqlConnection con = new SqlConnection(Properties.Settings.Default.Constr))
+                        {
+                            con.Open();
+                            SqlCommand sqlCommand = new SqlCommand();
+                            sqlCommand.Connection = con;
+                            sqlCommand.CommandText = "UPDATE_TRANGTHAI";
+                            sqlCommand.CommandType = CommandType.StoredProcedure;
+                            sqlCommand.Parameters.Add("@MAHD", SqlDbType.VarChar).Value = maHD;
+                            sqlCommand.ExecuteNonQuery();
+                            reset();
+                            MessageBox.Show("Thanh toán thành công !");
+                            con.Close();
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        MessageBox.Show(ex.Message);
+                    }
+                }
             }
 
 
@@ -373,6 +393,7 @@ namespace formLogin
 
         private void rjButton1_Click_1(object sender, EventArgs e)
         {
+            total = 0;
             reset();
         }
 
@@ -382,7 +403,7 @@ namespace formLogin
             rp.ShowDialog();
         }
 
-       
+
 
         private void cbbDanhMuc_SelectedIndexChanged(object sender, EventArgs e)
         {
